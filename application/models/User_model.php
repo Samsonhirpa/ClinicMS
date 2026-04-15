@@ -15,6 +15,41 @@ class User_model extends CI_Model
         return $this->db->order_by('id', 'DESC')->get($this->table)->result();
     }
 
+    public function getFiltered(array $filters = [])
+    {
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $this->db->group_start()
+                ->like('name', $search)
+                ->or_like('email', $search)
+                ->group_end();
+        }
+
+        if (!empty($filters['role'])) {
+            $this->db->where('role', $filters['role']);
+        }
+
+        if (!empty($filters['status'])) {
+            $this->db->where('status', $filters['status']);
+        }
+
+        return $this->db->order_by('id', 'DESC')->get($this->table)->result();
+    }
+
+    public function getCounts()
+    {
+        $totalUsers = (int) $this->db->count_all($this->table);
+        $activeUsers = (int) $this->db->where('status', 'active')->count_all_results($this->table);
+        $admins = (int) $this->db->where('role', 'admin')->count_all_results($this->table);
+
+        return [
+            'total_users' => $totalUsers,
+            'active_users' => $activeUsers,
+            'admins' => $admins,
+            'inactive_users' => max($totalUsers - $activeUsers, 0),
+        ];
+    }
+
     public function getById($id)
     {
         return $this->db->get_where($this->table, ['id' => (int) $id])->row();
