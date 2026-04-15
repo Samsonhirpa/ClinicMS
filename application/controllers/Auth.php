@@ -26,7 +26,7 @@ class Auth extends MY_Controller
                 $password = (string) $this->input->post('password', false);
                 $user = $this->User_model->getByEmail($email);
 
-                if ($user && $user->status === 'active' && password_verify($password, $user->password)) {
+                if ($user && $user->status === 'active' && $this->User_model->isValidPassword($user, $password)) {
                     $this->session->set_userdata([
                         'user_id' => $user->id,
                         'name' => $user->name,

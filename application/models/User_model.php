@@ -55,6 +55,40 @@ class User_model extends CI_Model
         return $this->db->get_where($this->table, ['id' => (int) $id])->row();
     }
 
+
+    public function isValidPassword($user, $plainPassword)
+    {
+        if (!$user || !isset($user->password)) {
+            return false;
+        }
+
+        $storedPassword = (string) $user->password;
+        $plainPassword = (string) $plainPassword;
+
+        $isValid = password_verify($plainPassword, $storedPassword);
+
+        // Backward compatibility for legacy seeded/plaintext/MD5 passwords.
+        if (!$isValid && hash_equals($storedPassword, $plainPassword)) {
+            $isValid = true;
+        }
+
+        if (!$isValid && preg_match('/^[a-f0-9]{32}$/i', $storedPassword) && hash_equals(strtolower($storedPassword), md5($plainPassword))) {
+            $isValid = true;
+        }
+
+        if ($isValid) {
+            $passwordInfo = password_get_info($storedPassword);
+            $isHashed = !empty($passwordInfo['algo']);
+            if (!$isHashed || password_needs_rehash($storedPassword, PASSWORD_BCRYPT)) {
+                $this->db->where('id', (int) $user->id)->update($this->table, [
+                    'password' => password_hash($plainPassword, PASSWORD_BCRYPT),
+                ]);
+            }
+        }
+
+        return $isValid;
+    }
+
     public function create(array $data)
     {
         $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);

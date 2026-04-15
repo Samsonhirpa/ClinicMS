@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Default admin login: admin@clinicms.local / Admin@123
 INSERT INTO `users` (`name`, `email`, `password`, `role`, `status`, `created_at`)
 SELECT 'System Admin', 'admin@clinicms.local',
-       '$2y$12$AqrV.Shzi58ksGCEjhHE2e.uShwy6OSvR6dhcubIHybrIqPfEZUXa',
+       '$2y$12$h0CohUoC.BZgx9/Zf.twQ.lTVKU9/3OAl3QsyD.1uMXc3pPmaJzrC',
        'admin', 'active', NOW()
 WHERE NOT EXISTS (
   SELECT 1 FROM `users` WHERE `email` = 'admin@clinicms.local'
