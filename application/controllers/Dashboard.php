@@ -17,15 +17,11 @@ class Dashboard extends MY_Controller
     {
         $role = (string) $this->session->userdata('role');
         if ($role === 'doctor') {
-            redirect('doctor/dashboard');
+            redirect('opd');
         }
 
         if ($role === 'reception') {
             redirect('reception/dashboard');
-        }
-
-        if ($role === 'lab') {
-            redirect('lab');
         }
 
         $counts = $this->User_model->getCounts();
@@ -69,11 +65,22 @@ class Dashboard extends MY_Controller
             'totalPatients' => $this->Patient_model->countAll(),
             'pendingRegistrationCount' => $this->Patient_payment_model->countPendingByType('registration'),
             'pendingDiagnoseCount' => $this->Patient_payment_model->countPendingByType('diagnose'),
-            'pendingLabCount' => $this->Patient_payment_model->countPendingByType('lab'),
             'opdReadyCount' => count($this->Patient_payment_model->getOpdReadyPatients()),
         ], [
             'title' => 'Reception Dashboard',
             'activeMenu' => 'reception_dashboard',
+        ]);
+    }
+
+    public function opd()
+    {
+        $this->requireRole(['admin', 'doctor']);
+
+        $this->render('dashboard/opd', [
+            'patients' => $this->Patient_payment_model->getOpdReadyPatients(),
+        ], [
+            'title' => 'OPD Portal',
+            'activeMenu' => 'opd',
         ]);
     }
 }

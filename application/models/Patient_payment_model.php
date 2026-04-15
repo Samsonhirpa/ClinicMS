@@ -81,23 +81,6 @@ class Patient_payment_model extends CI_Model
             ->count_all_results($this->table) > 0;
     }
 
-    public function getLatestForPatient($patientId)
-    {
-        return $this->db->where('patient_id', (int) $patientId)
-            ->order_by('id', 'DESC')
-            ->get($this->table)
-            ->row();
-    }
-
-    public function getLatestByTypeForPatient($patientId, $type)
-    {
-        return $this->db->where('patient_id', (int) $patientId)
-            ->where('payment_type', $type)
-            ->order_by('id', 'DESC')
-            ->get($this->table)
-            ->row();
-    }
-
     public function getOpdReadyPatients()
     {
         return $this->db->select('patients.*, MAX(patient_payments.approved_at) as approved_at')

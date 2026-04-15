@@ -22,6 +22,7 @@ class Patients extends MY_Controller
             'patients' => $this->Patient_model->getAll($search),
             'search' => $search,
             'registrationFee' => $this->resolveFee('registration'),
+            'diagnoseFee' => $this->resolveFee('diagnose'),
         ], [
             'title' => 'Manage Patients',
             'activeMenu' => 'patients_manage',
@@ -95,6 +96,31 @@ class Patients extends MY_Controller
         redirect('patients');
     }
 
+    public function addDiagnoseFee($id)
+    {
+        $patient = $this->Patient_model->getById($id);
+        if (!$patient) {
+            show_404();
+        }
+
+        if (!$this->Patient_payment_model->hasApprovedRegistration($id)) {
+            $this->session->set_flashdata('error', 'Diagnose fee can be added only after registration fee is approved.');
+            redirect('patients');
+        }
+
+        $fee = $this->resolveFee('diagnose');
+        $this->Patient_payment_model->create([
+            'patient_id' => (int) $id,
+            'payment_type' => 'diagnose',
+            'amount' => $fee['amount'],
+            'currency' => $fee['currency'],
+            'status' => 'pending',
+        ]);
+
+        $this->session->set_flashdata('success', 'Diagnose payment added as pending.');
+        redirect('patients');
+    }
+
     private function resolveFee($type)
     {
         $fees = $this->Fee_model->getAll($type);
@@ -104,9 +130,13 @@ class Patients extends MY_Controller
             }
         }
 
-        return [
-            'amount' => (float) $this->Fee_model->getSetting('default_registration_fee', 200),
-            'currency' => (string) $this->Fee_model->getSetting('default_registration_currency', 'ETB'),
-        ];
+        if ($type === 'registration') {
+            return [
+                'amount' => (float) $this->Fee_model->getSetting('default_registration_fee', 200),
+                'currency' => (string) $this->Fee_model->getSetting('default_registration_currency', 'ETB'),
+            ];
+        }
+
+        return ['amount' => 350, 'currency' => 'ETB'];
     }
 }

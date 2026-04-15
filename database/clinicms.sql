@@ -50,35 +50,3 @@ CREATE TABLE IF NOT EXISTS `patient_payments` (
   KEY `idx_payment_type_status` (`payment_type`, `status`),
   KEY `idx_patient` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `doctor_cases` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `patient_id` INT UNSIGNED NOT NULL,
-  `doctor_id` INT UNSIGNED NULL,
-  `consultation_note` TEXT NULL,
-  `recommended_tests` TEXT NULL,
-  `status` VARCHAR(40) NOT NULL DEFAULT 'new',
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_doctor_case_patient` (`patient_id`),
-  KEY `idx_doctor_status` (`doctor_id`, `status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `lab_requests` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `doctor_case_id` INT UNSIGNED NOT NULL,
-  `patient_id` INT UNSIGNED NOT NULL,
-  `requested_by` INT UNSIGNED NOT NULL,
-  `test_name` VARCHAR(255) NOT NULL,
-  `instructions` TEXT NULL,
-  `result_text` TEXT NULL,
-  `status` VARCHAR(30) NOT NULL DEFAULT 'pending_payment',
-  `completed_by` INT UNSIGNED NULL,
-  `completed_at` DATETIME NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_lab_status` (`status`),
-  KEY `idx_lab_case` (`doctor_case_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

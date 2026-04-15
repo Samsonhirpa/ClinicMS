@@ -25,7 +25,8 @@
                     <td><?= html_escape((string) $patient->phone); ?></td>
                     <td class="d-flex flex-wrap gap-2">
                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editPatientModal<?= (int) $patient->id; ?>">Edit</button>
-                                            </td>
+                        <a href="<?= site_url('patients/add-diagnose-fee/' . $patient->id); ?>" class="btn btn-sm btn-outline-secondary" onclick="return confirm('Add pending diagnose fee for this patient?');">Add Diagnose Fee (<?= html_escape($diagnoseFee['currency']); ?> <?= number_format((float) $diagnoseFee['amount'], 2); ?>)</a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

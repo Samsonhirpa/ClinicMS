@@ -2,9 +2,6 @@
 $role = (string) $this->session->userdata('role');
 $pendingRegistrationCount = isset($pendingRegistrationCount) ? (int) $pendingRegistrationCount : 0;
 $pendingDiagnoseCount = isset($pendingDiagnoseCount) ? (int) $pendingDiagnoseCount : 0;
-$pendingLabCount = isset($pendingLabCount) ? (int) $pendingLabCount : 0;
-$doctorNewPatientCount = isset($doctorNewPatientCount) ? (int) $doctorNewPatientCount : 0;
-$labNewRequestCount = isset($labNewRequestCount) ? (int) $labNewRequestCount : 0;
 ?>
 <aside class="app-sidebar bg-white border-end shadow-sm">
     <div class="p-3 border-bottom position-sticky top-0 bg-white" style="z-index: 2;">
@@ -23,22 +20,18 @@ $labNewRequestCount = isset($labNewRequestCount) ? (int) $labNewRequestCount : 0
                 <div class="list-group-item">
                     <div class="fw-semibold mb-2">Patient Payments</div>
                     <div class="d-grid gap-1">
-                        <a href="<?= site_url('patient-payments/registration'); ?>" class="btn btn-sm btn-outline-secondary text-start <?= $activeMenu === 'registration_fee' ? 'active' : ''; ?>">Registration Fee <?= $pendingRegistrationCount > 0 ? '(' . $pendingRegistrationCount . ')' : ''; ?></a>
-                        <a href="<?= site_url('patient-payments/diagnose'); ?>" class="btn btn-sm btn-outline-secondary text-start <?= $activeMenu === 'diagnose_fee' ? 'active' : ''; ?>">Diagnose Fee <?= $pendingDiagnoseCount > 0 ? '(' . $pendingDiagnoseCount . ')' : ''; ?></a>
-                        <a href="<?= site_url('patient-payments/lab'); ?>" class="btn btn-sm btn-outline-secondary text-start <?= $activeMenu === 'lab_fee' ? 'active' : ''; ?>">Lab Fee <?= $pendingLabCount > 0 ? '(' . $pendingLabCount . ')' : ''; ?></a>
+                        <a href="<?= site_url('patient-payments/registration'); ?>" class="btn btn-sm btn-outline-secondary text-start <?= $activeMenu === 'registration_fee' ? 'active' : ''; ?>">
+                            Registration Fee <?= $pendingRegistrationCount > 0 ? '(' . $pendingRegistrationCount . ')' : ''; ?>
+                        </a>
+                        <a href="<?= site_url('patient-payments/diagnose'); ?>" class="btn btn-sm btn-outline-secondary text-start <?= $activeMenu === 'diagnose_fee' ? 'active' : ''; ?>">
+                            Diagnose Fee <?= $pendingDiagnoseCount > 0 ? '(' . $pendingDiagnoseCount . ')' : ''; ?>
+                        </a>
                     </div>
                 </div>
             <?php endif; ?>
 
             <?php if (in_array($role, ['admin', 'doctor'], true)): ?>
-                <a href="<?= site_url('doctor/dashboard'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'doctor_dashboard' ? 'active' : ''; ?>">Doctor Dashboard</a>
-                <a href="<?= site_url('doctor/new-patients'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'doctor_new_patients' ? 'active' : ''; ?>">New Patients <?= $doctorNewPatientCount > 0 ? '(' . $doctorNewPatientCount . ')' : ''; ?></a>
-                <a href="<?= site_url('doctor/all-patients'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'doctor_all_patients' ? 'active' : ''; ?>">All Patients</a>
-                <a href="<?= site_url('doctor/lab-results'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'doctor_lab_results' ? 'active' : ''; ?>">Lab Result</a>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['admin', 'lab'], true)): ?>
-                <a href="<?= site_url('lab'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'lab_portal' ? 'active' : ''; ?>">Lab Portal <?= $labNewRequestCount > 0 ? '(' . $labNewRequestCount . ')' : ''; ?></a>
+                <a href="<?= site_url('opd'); ?>" class="list-group-item list-group-item-action <?= $activeMenu === 'opd' ? 'active' : ''; ?>">OPD Portal</a>
             <?php endif; ?>
 
             <?php if ($role === 'admin'): ?>
