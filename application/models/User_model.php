@@ -15,9 +15,78 @@ class User_model extends CI_Model
         return $this->db->order_by('id', 'DESC')->get($this->table)->result();
     }
 
+    public function getFiltered(array $filters = [])
+    {
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $this->db->group_start()
+                ->like('name', $search)
+                ->or_like('email', $search)
+                ->group_end();
+        }
+
+        if (!empty($filters['role'])) {
+            $this->db->where('role', $filters['role']);
+        }
+
+        if (!empty($filters['status'])) {
+            $this->db->where('status', $filters['status']);
+        }
+
+        return $this->db->order_by('id', 'DESC')->get($this->table)->result();
+    }
+
+    public function getCounts()
+    {
+        $totalUsers = (int) $this->db->count_all($this->table);
+        $activeUsers = (int) $this->db->where('status', 'active')->count_all_results($this->table);
+        $admins = (int) $this->db->where('role', 'admin')->count_all_results($this->table);
+
+        return [
+            'total_users' => $totalUsers,
+            'active_users' => $activeUsers,
+            'admins' => $admins,
+            'inactive_users' => max($totalUsers - $activeUsers, 0),
+        ];
+    }
+
     public function getById($id)
     {
         return $this->db->get_where($this->table, ['id' => (int) $id])->row();
+    }
+
+
+    public function isValidPassword($user, $plainPassword)
+    {
+        if (!$user || !isset($user->password)) {
+            return false;
+        }
+
+        $storedPassword = (string) $user->password;
+        $plainPassword = (string) $plainPassword;
+
+        $isValid = password_verify($plainPassword, $storedPassword);
+
+        // Backward compatibility for legacy seeded/plaintext/MD5 passwords.
+        if (!$isValid && hash_equals($storedPassword, $plainPassword)) {
+            $isValid = true;
+        }
+
+        if (!$isValid && preg_match('/^[a-f0-9]{32}$/i', $storedPassword) && hash_equals(strtolower($storedPassword), md5($plainPassword))) {
+            $isValid = true;
+        }
+
+        if ($isValid) {
+            $passwordInfo = password_get_info($storedPassword);
+            $isHashed = !empty($passwordInfo['algo']);
+            if (!$isHashed || password_needs_rehash($storedPassword, PASSWORD_BCRYPT)) {
+                $this->db->where('id', (int) $user->id)->update($this->table, [
+                    'password' => password_hash($plainPassword, PASSWORD_BCRYPT),
+                ]);
+            }
+        }
+
+        return $isValid;
     }
 
     public function create(array $data)
