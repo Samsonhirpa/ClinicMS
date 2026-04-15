@@ -14,7 +14,7 @@ class Auth extends MY_Controller
     public function login()
     {
         if ($this->session->userdata('user_id')) {
-            redirect('users');
+            redirect('dashboard');
         }
 
         if ($this->input->method() === 'post') {
@@ -34,7 +34,7 @@ class Auth extends MY_Controller
                         'role' => $user->role,
                     ]);
 
-                    redirect('users');
+                    redirect('dashboard');
                 }
 
                 $this->session->set_flashdata('error', 'Invalid credentials or inactive account.');

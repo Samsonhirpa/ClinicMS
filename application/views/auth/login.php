@@ -1,9 +1,9 @@
 <?php
 $title = 'Login';
-$hideNavbar = true;
 $bodyClass = 'bg-primary bg-gradient min-vh-100 d-flex align-items-center';
 $containerClass = 'container';
-$this->load->view('layouts/header', compact('title', 'hideNavbar', 'bodyClass', 'containerClass'));
+$showSidebar = false;
+$this->load->view('layouts/header', compact('title', 'bodyClass', 'containerClass', 'showSidebar'));
 ?>
 <div class="row justify-content-center">
     <div class="col-lg-9 col-xl-8">
