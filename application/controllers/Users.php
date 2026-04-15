@@ -17,9 +17,18 @@ class Users extends MY_Controller
 
     public function index()
     {
-        $data['users'] = $this->User_model->getAll();
+        $filters = [
+            'search' => trim((string) $this->input->get('search', true)),
+            'role' => trim((string) $this->input->get('role', true)),
+            'status' => trim((string) $this->input->get('status', true)),
+        ];
+
+        $data['users'] = $this->User_model->getFiltered($filters);
         $data['roles'] = $this->roles;
         $data['statuses'] = $this->statuses;
+        $data['filters'] = $filters;
+        $data['counts'] = $this->User_model->getCounts();
+
         $this->load->view('users/index', $data);
     }
 
@@ -44,7 +53,7 @@ class Users extends MY_Controller
             'status' => $this->input->post('status', true),
         ]);
 
-        $this->session->set_flashdata('success', 'User created successfully.');
+        $this->session->set_flashdata('success', 'User registered successfully.');
         redirect('users');
     }
 
