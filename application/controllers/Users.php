@@ -27,9 +27,10 @@ class Users extends MY_Controller
         $data['roles'] = $this->roles;
         $data['statuses'] = $this->statuses;
         $data['filters'] = $filters;
-        $data['counts'] = $this->User_model->getCounts();
-
-        $this->load->view('users/index', $data);
+        $this->render('users/index', $data, [
+            'title' => 'User Management',
+            'activeMenu' => 'users',
+        ]);
     }
 
     public function create()
