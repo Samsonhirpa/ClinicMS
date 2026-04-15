@@ -35,7 +35,23 @@ class MY_Controller extends CI_Controller
             'activeMenu' => '',
             'showSidebar' => true,
             'containerClass' => 'app-content p-4',
+            'pendingRegistrationCount' => 0,
+            'pendingDiagnoseCount' => 0,
+            'pendingLabCount' => 0,
+            'doctorNewPatientCount' => 0,
+            'labNewRequestCount' => 0,
         ], $layoutData);
+
+        if (!empty($layoutData['showSidebar'])) {
+            $this->load->model('Patient_payment_model');
+            $this->load->model('Doctor_case_model');
+            $this->load->model('Lab_request_model');
+            $layoutData['pendingRegistrationCount'] = $this->Patient_payment_model->countPendingByType('registration');
+            $layoutData['pendingDiagnoseCount'] = $this->Patient_payment_model->countPendingByType('diagnose');
+            $layoutData['pendingLabCount'] = $this->Patient_payment_model->countPendingByType('lab');
+            $layoutData['doctorNewPatientCount'] = $this->Doctor_case_model->countByStatus('new');
+            $layoutData['labNewRequestCount'] = $this->Lab_request_model->countByStatus('paid');
+        }
 
         $this->load->view('layouts/header', $layoutData);
         if (!empty($layoutData['showSidebar'])) {
