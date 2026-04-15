@@ -66,7 +66,9 @@
 switch (ENVIRONMENT)
 {
 	case 'development':
-		error_reporting(-1);
+		// CodeIgniter 3 triggers PHP 8.2 deprecation notices for dynamic properties
+		// in a number of core/database classes. Keep all other errors visible.
+		error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
 		ini_set('display_errors', 1);
 	break;
 
