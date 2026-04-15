@@ -8,7 +8,7 @@ Initial module delivered:
 1. Create a MySQL database (example: `clinicms`).
 2. Import `database/clinicms.sql`.
 3. Update DB credentials in `application/config/database.php`.
-4. Serve the app and open `/index.php/login`.
+4. Serve the app and open `http://localhost/clinicms/index.php/login` (or your equivalent host path).
 
 ## Default Admin
 - Email: `admin@clinicms.local`
