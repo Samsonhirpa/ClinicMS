@@ -35,7 +35,15 @@ class MY_Controller extends CI_Controller
             'activeMenu' => '',
             'showSidebar' => true,
             'containerClass' => 'app-content p-4',
+            'pendingRegistrationCount' => 0,
+            'pendingDiagnoseCount' => 0,
         ], $layoutData);
+
+        if (!empty($layoutData['showSidebar'])) {
+            $this->load->model('Patient_payment_model');
+            $layoutData['pendingRegistrationCount'] = $this->Patient_payment_model->countPendingByType('registration');
+            $layoutData['pendingDiagnoseCount'] = $this->Patient_payment_model->countPendingByType('diagnose');
+        }
 
         $this->load->view('layouts/header', $layoutData);
         if (!empty($layoutData['showSidebar'])) {
